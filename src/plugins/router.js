@@ -3,6 +3,7 @@
 const debug = require("debug")("blocks:RouterPlugin")
 const Ajv = require("ajv").default
 const addFormats = require("ajv-formats")
+const addKeywords = require("ajv-keywords")
 const { pathToRegexp } = require("path-to-regexp")
 const {
   count,
@@ -45,6 +46,8 @@ module.exports = {
         "regex",
       ],
     })
+
+    addKeywords(ajv)
 
     const defaultRouteSchema = require("./route-default.schema")
     const routes = []

@@ -49,6 +49,7 @@ describe("blocks :: init with defaults", async assert => {
       routes: [
         require("./routes/no-schema.route"),
         require("./routes/with-schema.route"),
+        require("./routes/with-keywords.route"),
         require("./routes/no-authenticate.route"),
         require("./routes/no-authorize.route"),
         require("./routes/dont-authenticate.route"),
@@ -69,10 +70,10 @@ describe("blocks :: init with defaults", async assert => {
     })
 
     assert({
-      given: "11 custom routes",
+      given: "13 custom routes",
       should: "load default /ping and all custom",
       actual: plugins.Router.count(),
-      expected: 12,
+      expected: 13,
     })
 
     assert({
@@ -254,6 +255,23 @@ describe("blocks :: init with defaults", async assert => {
         params: { name: "mutant" },
         query: { v: 1 },
         body: { parsed: "with qs", another: "value" },
+      },
+    })
+
+    assert({
+      given: "form encoded with custom keywords",
+      should: "validate input",
+      actual: await POST(`${API_URL}/with-keywords`, {
+        headers: {
+          "content-type": "application/x-www-form-urlencoded",
+        },
+        body: "title=%20UP%20CASED%20&foo=foobar",
+      }),
+      expected: {
+        message: "Hello Plugin World!",
+        query: {},
+        params: {},
+        body: { foo: "foobar", title: "up cased" },
       },
     })
 
